@@ -2,14 +2,17 @@ package com.hrm.leave_mgnt.services.ServiceImp;
 
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hrm.leave_mgnt.exception.ResourceNotFoundException;
+import com.hrm.leave_mgnt.model.dto.LeaveDto;
+import com.hrm.leave_mgnt.model.dto.UserDto;
 import com.hrm.leave_mgnt.model.entity.Leave;
 import com.hrm.leave_mgnt.repository.LeaveRepository;
 import com.hrm.leave_mgnt.services.LeaveService.LeaveService;
 import com.hrm.leave_mgnt.services.LeaveService.UserFeignClient;
-import com.hrm.user.model.entity.User;
 
 @Service
 public class LeaveServiceImp implements LeaveService {
@@ -20,18 +23,24 @@ public class LeaveServiceImp implements LeaveService {
     @Autowired
     private UserFeignClient userFeignClient; // Feign client to call the user microservice
 
+    @Autowired
+    private ModelMapper modelMapper; // ModelMapper for automatic mapping
     @Override
-    public Leave creatLeave(Leave leave) {
+    public Leave creatLeave(LeaveDto leaveDto) {
         // Call user-service to check if the user exists
-        Optional<User> userOptional = userFeignClient.getUserById(leave.getUsername());
+        Optional<UserDto> userOptional = userFeignClient.getUserById(leaveDto.getUsername());
 
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            // Optionally, log or use the user's details
+            // Use ModelMapper to map LeaveDto to Leave entity
+            Leave leave = modelMapper.map(leaveDto, Leave.class);
+
+            // Save the Leave entity
             return leaveRepository.save(leave);
         } else {
             // Handle user not found
-            throw new RuntimeException("User with username " + leave.getUsername() + " does not exist.");
+            throw new ResourceNotFoundException("User with username " + leaveDto.getUsername() + " does not exist.");
         }
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.hrm.leave_mgnt.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hrm.leave_mgnt.model.dto.LeaveDto;
 import com.hrm.leave_mgnt.model.entity.Leave;
 
 import com.hrm.leave_mgnt.services.LeaveService.LeaveService;
@@ -15,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("/leave_mgnt")
+@RequestMapping("/leave")
 @CrossOrigin(origins = "http://localhost:8082")
 public class LeaveController {
   @Autowired
     private LeaveService leaveService;
     @PostMapping("/createLeave")
-    public Leave creatLeave(@PathVariable String username,@RequestBody Leave leave) {
-        return leaveService.creatLeave(leave);
+    public Leave creatLeave(@RequestBody LeaveDto leaveDto) {
+        return leaveService.creatLeave(leaveDto);
     }
     
     

@@ -1,8 +1,11 @@
 package com.hrm.leave_mgnt.model.entity;
-import javax.print.DocFlavor.STRING;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import com.hrm.leave_mgnt.constants.leave_type;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -19,7 +22,9 @@ public class Leave {
     private String leaveId;
     @Column(name = "username")
     private String username;
-    @Column(name = "Leave_type")
-    private String Leave_type;
+    @Column(name = "leave_type")
+    @Enumerated(EnumType.STRING)
+    private leave_type leave_type;
+    
 }
 
