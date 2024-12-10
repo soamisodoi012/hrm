@@ -34,7 +34,7 @@ public class LeaveServiceImp implements LeaveService {
             // Use ModelMapper to map LeaveDto to Leave entity
             Leave leave = modelMapper.map(leaveDto, Leave.class);
 
-            // Save the Leave entity
+            // Save the Leave entitycd desktoop
             return leaveRepository.save(leave);
         } else {
             // Handle user not found
