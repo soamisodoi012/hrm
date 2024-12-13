@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hrm.user.model.dto.UserDto;
 import com.hrm.user.model.entity.User;
 import com.hrm.user.repository.UserRepository;
 import com.hrm.user.service.services.UserService;
@@ -18,7 +20,8 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private final UserRepository userRepository;
-    
+    @Autowired
+    private ModelMapper modelMapper;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
 
     public UserServiceImp(UserRepository userRepository) {
@@ -26,10 +29,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
+    public User createUser(UserDto userDto) {
         try {
             // Attempt to save the user
-            return userRepository.save(user);
+            User leave = modelMapper.map(userDto, User.class);
+            return userRepository.save(leave);
         } catch (DataIntegrityViolationException e) {
             // Log the error and return null or a specific response
             logger.error("Error saving user: {}", e.getMessage(), e);

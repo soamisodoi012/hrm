@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.hrm.user.model.dto.UserDto;
 import com.hrm.user.model.entity.User;
 import com.hrm.user.service.services.UserService;
 
@@ -26,8 +27,8 @@ public class UserController {
 
     // API endpoint for creating a user
     @PostMapping("/createUser")
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public User createUser(@RequestBody UserDto userDto) {
+        return userService.createUser(userDto);
     }
     @GetMapping("/{username}")
     public Optional<User> getUser(@PathVariable("username")String username){

@@ -17,7 +17,24 @@ public class User {
     @Id
     @Column(name = "username", nullable = false, unique = true)
     private String username; // This acts as the primary key.
-
     @Column(name = "address")
     private String address;
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "userId")
+    private String userId;
+    @Column(name = "salary")
+    private Float salary;
+    @Column(name = "title")
+    private String title;
+    @Column(name = "sex")
+    private String sex;
+    @Column(name = "age")
+    private Float age;
+    @Column(name = "totalLeave")
+    private Float totalLeave;
+    @Column(name = "depId")
+    private String depId;
+    @Column(name = "role")
+    private String role;
 }

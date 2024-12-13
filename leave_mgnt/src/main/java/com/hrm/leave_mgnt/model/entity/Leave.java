@@ -4,6 +4,9 @@ package com.hrm.leave_mgnt.model.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
+
+import java.util.Date;
+
 import com.hrm.leave_mgnt.constants.leave_type;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
@@ -25,6 +28,13 @@ public class Leave {
     @Column(name = "leave_type")
     @Enumerated(EnumType.STRING)
     private leave_type leave_type;
+    @Column(name = "status")
+    private String status;
+    @Column(name = "startDate")
+    private Date startDate;
+    @Column(name = "endDate")
+    private Date  endDate;
+
     
 }
 
