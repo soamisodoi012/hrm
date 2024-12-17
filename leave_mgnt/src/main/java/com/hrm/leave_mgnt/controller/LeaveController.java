@@ -3,9 +3,15 @@ package com.hrm.leave_mgnt.controller;
 import com.hrm.leave_mgnt.model.dto.LeaveDto;
 import com.hrm.leave_mgnt.model.entity.Leave;
 import com.hrm.leave_mgnt.services.LeaveService.LeaveService;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/leave")
@@ -22,11 +28,15 @@ public class LeaveController {
         return ResponseEntity.ok(createdLeave);
     }
     @PostMapping("/approve/{leaveId}")
-    public ResponseEntity<LeaveDto> approve(@PathVariable String leaveId) {
+    public Leave approve(@PathVariable String leaveId) {
         // Call service to approve leave
-        LeaveDto updatedLeave = leaveService.updateLeave(leaveId, null);
-        System.out.println("Updated Leave: " + updatedLeave);
-        return ResponseEntity.ok(updatedLeave);
+        Leave updatedLeave = leaveService.approveLeave(leaveId);
+        return updatedLeave;
     }
+    @GetMapping("/{leaveId}")
+    public Optional<Leave> getLeave(@PathVariable String leaveId) {
+        return leaveService.viewLeave(leaveId);
+    }
+    
     
 }

@@ -19,4 +19,6 @@ public class UserDto {
     private Float totalLeave;
     private String depId;
     private String role;
+    private String experiance;
+    private boolean isLocked;
 }

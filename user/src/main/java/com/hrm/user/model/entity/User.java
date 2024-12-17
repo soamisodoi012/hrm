@@ -37,4 +37,8 @@ public class User {
     private String depId;
     @Column(name = "role")
     private String role;
+    @Column(name= "experiance")
+    private String experiance;
+    @Column(name = "isLocked")
+    private boolean isLocked;
 }

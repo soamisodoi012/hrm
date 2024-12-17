@@ -2,6 +2,7 @@ package com.hrm.user.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.hrm.user.model.dto.UserDto;
 import com.hrm.user.model.entity.User;
 import com.hrm.user.service.services.UserService;
+import org.springframework.web.bind.annotation.PutMapping;
+
+
 
 @RestController
 @RequestMapping("/user")
@@ -34,5 +38,19 @@ public class UserController {
     public Optional<User> getUser(@PathVariable("username")String username){
       return userService.getUserById(username);
       
+    }@PostMapping("/updateUser/{username}")
+    public UserDto updateUser(@PathVariable String username, @RequestBody UserDto userDto) {
+        return userService.updateUser(username, userDto);
     }
+    @GetMapping("/getAllUser")
+    public List<User> getAllUser() {
+        return userService.getAllUser();
+    }
+    @PostMapping("/lockUser/{username}")
+    public boolean lockUser(@PathVariable String username) {
+        
+        userService.lockUser(username);
+        return true;
+    }
+      
 }
