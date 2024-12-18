@@ -20,7 +20,6 @@ public class GlobalException {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
-
     // Handle generic RuntimeException
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
