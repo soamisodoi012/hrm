@@ -36,17 +36,24 @@ public class UserController {
         return userService.createUser(userDto);
     }
     @GetMapping("/{username}")
-    public Optional<User> getUser(@PathVariable("username")String username){
+    public UserResponse getUser(@PathVariable("username")String username){
       return userService.getUserById(username);
       
     }@PostMapping("/updateUser/{username}")
-    public UserDto updateUser(@PathVariable String username, @RequestBody UserDto userDto) {
+    public UserResponse updateUser(@PathVariable String username, @RequestBody UserDto userDto) {
+        // Validate that username is not null or empty
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty.");
+        }
+        System.out.println("Username received in request: " + username);
         return userService.updateUser(username, userDto);
     }
+    
     @GetMapping("/getAllUser")
-    public List<User> getAllUser() {
+    public List<UserResponse> getAllUser() {
         return userService.getAllUser();
     }
+    
     @PostMapping("/lockUser/{username}")
     public boolean lockUser(@PathVariable String username) {
         

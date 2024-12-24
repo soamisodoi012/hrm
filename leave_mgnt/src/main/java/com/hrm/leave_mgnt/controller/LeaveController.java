@@ -4,6 +4,8 @@ import com.hrm.leave_mgnt.model.dto.LeaveDto;
 import com.hrm.leave_mgnt.model.entity.Leave;
 import com.hrm.leave_mgnt.services.LeaveService.LeaveService;
 
+import jakarta.ws.rs.GET;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class LeaveController {
         Leave createdLeave = leaveService.createLeave(leaveDto);
         return ResponseEntity.ok(createdLeave);
     }
-    @PostMapping("/approve/{leaveId}")
+    @GetMapping("/approve/{leaveId}")
     public Leave approve(@PathVariable String leaveId) {
         // Call service to approve leave
         Leave updatedLeave = leaveService.approveLeave(leaveId);

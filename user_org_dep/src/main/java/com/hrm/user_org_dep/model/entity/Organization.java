@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -31,6 +32,8 @@ public class Organization {
 
     // One-to-Many relationship with departments
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    
     private List<Department> departments;
     
 }

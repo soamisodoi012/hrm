@@ -1,5 +1,9 @@
 package com.hrm.user_org_dep.service.servicesImp;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,36 +23,101 @@ private DepartmentRepository departmentRepository;
 private OrganizationRepository organizationRepository;
 @Autowired
 private ModelMapper modelMapper;    
-@Override
 public DepResponse createDepartment(DepartmentDto departmentDto) {
-    // Create a new Department entity
-    Department department = new Department();
-    department.setDepId(departmentDto.getDepId());
-    department.setDepName(departmentDto.getDepName());
+        // Create a new Department entity
+        Department department = new Department();
+        department.setDepId(departmentDto.getDepId());
+        department.setDepName(departmentDto.getDepName());
+    DepResponse  depResponse=new DepResponse();
+        Optional<Organization> org = organizationRepository.findById(departmentDto.getOrganizationId());
+        if (org.isPresent()) {
+            Organization organization=org.get();
+            department.setOrganization(organization); 
+            depResponse.setOrganizationId(organization.getOrgId()); // Set the Organization entity
+        }
     
-    // Fetch and assign parent department if it exists, else set null
-    Department parentDepartment = departmentDto.getParentDepartmentId() != null
-            ? departmentRepository.findById(departmentDto.getParentDepartmentId()).orElse(null)
-            : null;
-    department.setParentDepartment(parentDepartment);
+        if (departmentDto.getParentDepartmentId() != null) {
+            Optional<Department> parentDept = departmentRepository.findById(departmentDto.getParentDepartmentId());
+            if (parentDept.isPresent()) {
+                Department dep=parentDept.get();
+                department.setParentDepartment(dep);
+                depResponse.setParentDepartmentId(dep.getDepId());// Set the parent Department entity
+            }
+        }
     
-    // Fetch and assign the organization entity
-    Organization organization = organizationRepository.findById(departmentDto.getOrganizationId())
-            .orElseThrow(() -> new RuntimeException("Organization not found with ID: " + departmentDto.getOrganizationId()));
-    department.setOrganization(organization);
+        departmentRepository.save(department);
+        
+        // Create and return DepResponse DTO
+               depResponse.setDepId(department.getDepId());
+               depResponse.setDepName(department.getDepName());
+                 // Assuming Org has getOrgId()    
+        return depResponse;
+    }
+@Override
+    public DepResponse getDepById(String depId) {
 
-    // Save the department entity
-    departmentRepository.save(department);
-    
-    // Create and return DepResponse DTO
-    DepResponse depResponse = new DepResponse(
-            department.getDepId(),
-            department.getDepName(),
-            organization.getOrgId(),
-            (parentDepartment != null) ? parentDepartment.getDepId() : null
-    );
+          Optional<Department> department=  departmentRepository.findById(depId);
+            DepResponse depResponse=new DepResponse();
+            
+            if (department.isPresent()) {
+                depResponse.setDepId(department.get().getDepId());
+                depResponse.setDepName(department.get().getDepName());
+              depResponse.setParentDepartmentId(department.get().getParentDepartment().getDepId());
+              depResponse.setOrganizationId(department.get().getOrganization().getOrgId());
+            }
+            return depResponse;
+    }
+@Override
+ public List<DepResponse> getAllDep() {
+        List<Department> departments = departmentRepository.findAll(); // Fetch all departments
+        return departments.stream()
+                          .map(this::convertToDepResponse) // Convert each Department to DepResponse
+                          .collect(Collectors.toList());  // Use Collectors.toList() for Java 8 compatibility
+    }
 
-    return depResponse;
+    // Conversion method: Department to DepResponse
+    private DepResponse convertToDepResponse(Department department) {
+        DepResponse response = new DepResponse();
+        response.setDepId(department.getDepId());
+        response.setDepName(department.getDepName());
+        response.setOrganizationId(department.getOrganization() != null ? department.getOrganization().getOrgId() : null);
+        response.setParentDepartmentId(department.getParentDepartment() != null ? department.getParentDepartment().getDepId() : null);
+
+        return response;
+    }
+
+//
+@Override
+public DepResponse updateDep(String depId, DepartmentDto departmentDto) {
+    Optional<Department> optionalDepartment=departmentRepository.findById(depId);
+    Optional<Organization> optionalOrganization;
+    Optional<Department> optionalDepartmentParent;
+    DepResponse depResponse= new DepResponse();
+    if (optionalDepartment.isPresent()) {
+        Department department=optionalDepartment.get();
+        if (departmentDto.getDepName()!=null)
+        {
+         department.setDepName(departmentDto.getDepName());
+         depResponse.setDepName(department.getDepName());
+        }
+        if (departmentDto.getParentDepartmentId()!=null){
+            optionalDepartmentParent =departmentRepository.findById(departmentDto.getParentDepartmentId());
+        department.setParentDepartment(optionalDepartmentParent.get());
+        depResponse.setParentDepartmentId(department.getParentDepartment().getDepId());
+    }
+        if (departmentDto.getOrganizationId()!=null) {
+            optionalOrganization=organizationRepository.findById(departmentDto.getOrganizationId());
+         department.setOrganization(optionalOrganization.get()); 
+         depResponse.setOrganizationId(department.getOrganization().getOrgId());
+         }
+        departmentRepository.save(department);
+
+       depResponse.setDepId(depId);
+       depResponse.setOrganizationId(department.getOrganization().getOrgId());
+       depResponse.setParentDepartmentId(department.getParentDepartment().getDepId());
+       return depResponse;
+       }
+       else return null;
+      
 }
-   
 }

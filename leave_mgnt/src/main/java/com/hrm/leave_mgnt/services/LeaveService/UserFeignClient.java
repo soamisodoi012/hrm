@@ -11,7 +11,7 @@ import com.hrm.leave_mgnt.model.dto.UserDto;
 
 import java.util.Optional;
 
-@FeignClient(name = "user", path = "/user") // Match the base path of the `user` service
+@FeignClient(name = "user-org-dep", path = "/user") // Match the base path of the `user` service
 public interface UserFeignClient {
 
     @GetMapping("/{username}")

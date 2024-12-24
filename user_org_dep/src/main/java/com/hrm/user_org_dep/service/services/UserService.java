@@ -9,8 +9,8 @@ import com.hrm.user_org_dep.model.entity.User;
 
 public interface UserService {
     UserResponse createUser(UserDto userDto);
-    Optional<User> getUserById(String username);
-    List<User> getAllUser();
-    UserDto updateUser(String username,UserDto userDto);
+    UserResponse getUserById(String username);
+    List<UserResponse> getAllUser();
+    UserResponse updateUser(String username,UserDto userDto);
     UserDto lockUser(String username);
 }

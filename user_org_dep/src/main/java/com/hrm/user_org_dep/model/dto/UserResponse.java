@@ -1,5 +1,7 @@
 package com.hrm.user_org_dep.model.dto;
 
+import java.math.BigDecimal;
+
 import com.hrm.user_org_dep.model.entity.Department;
 
 import lombok.AllArgsConstructor;
@@ -13,11 +15,11 @@ public class UserResponse {
     private String address;
     private String phone;
     private String userId;
-    private Float salary;
+    private BigDecimal salary;
     private String title;
     private String sex;
-    private Float age;
-    private Float totalLeave;
+    private BigDecimal age;
+    private BigDecimal totalLeave;
     private String department;
     private String role;
     private String experiance;

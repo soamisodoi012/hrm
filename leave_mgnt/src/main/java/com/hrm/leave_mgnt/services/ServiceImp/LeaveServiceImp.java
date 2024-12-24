@@ -44,37 +44,69 @@ public Leave approveLeave(String leaveId) {
     LocalDateTime endDateTime = existingLeave.getEndDate().toInstant()
             .atZone(ZoneId.systemDefault()).toLocalDateTime();
     long numberOfDays = ChronoUnit.DAYS.between(startDateTime.toLocalDate(), endDateTime.toLocalDate()) + 1;
+    System.out.println("days"+numberOfDays);
     leaveRepository.save(existingLeave);
     userFeignClient.lockUser(existingLeave.getUsername());
     UserDto userDto=new UserDto();
     Optional<UserDto> userOptional = userFeignClient.getUserById(existingLeave.getUsername());
-    userDto.setTotalLeave((float) (userOptional.get().getTotalLeave()- numberOfDays));
+    System.out.println("userOptional.get().getTotalLeave()"+ userOptional.get().getTotalLeave()+ userOptional);
+    userDto.setTotalLeave((Double) (userOptional.get().getTotalLeave() - numberOfDays));
     userFeignClient.updateUser(existingLeave.getUsername(),userDto);
     // Return the updated DTO
     return existingLeave;//modelMapper.map(existingLeave, LeaveDto.class);
 }
 
+    // @Override
+    // public Leave createLeave(LeaveDto leaveDto) {
+
+    //         // Call user-service to check if the user exists
+    //         Optional<UserDto> userOptional = userFeignClient.getUserById(leaveDto.getUsername());
+    //         System.out.println(userOptional+"userOptional");
+    //         if (userOptional.isPresent()) {
+    //             leaveDto.setStatus("new");
+    //             leaveDto.setEndDate(new Date());
+    //             leaveDto.setStartDate(new Date());
+
+    //             Leave leave = modelMapper.map(leaveDto, Leave.class);
+    //             // Save the Leave entitycd desktoop
+    //             return leaveRepository.save(leave);
+    //         } else {
+    //             // Handle user not found
+    //             throw new ResourceNotFoundException("User with username " + leaveDto.getUsername() + " does not exist.");
+    //         }
+        
+    //     }
     @Override
     public Leave createLeave(LeaveDto leaveDto) {
-
-            // Call user-service to check if the user exists
-            Optional<UserDto> userOptional = userFeignClient.getUserById(leaveDto.getUsername());
-            System.out.println(userOptional+"userOptional");
-            if (userOptional.isPresent()) {
-                leaveDto.setStatus("new");
-                leaveDto.setEndDate(new Date());
-                leaveDto.setStartDate(new Date());
-
-                Leave leave = modelMapper.map(leaveDto, Leave.class);
-                // Save the Leave entitycd desktoop
-                return leaveRepository.save(leave);
-            } else {
-                // Handle user not found
-                throw new ResourceNotFoundException("User with username " + leaveDto.getUsername() + " does not exist.");
-            }
-        
+    
+        // Call user-service to check if the user exists
+        Optional<UserDto> userOptional = userFeignClient.getUserById(leaveDto.getUsername());
+        System.out.println(userOptional + " userOptional");
+    
+        if (userOptional.isPresent()) {
+            // Get the current time as LocalDateTime and truncate it to only year, month, day, hour, minute
+            LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    
+            // Convert LocalDateTime to Date
+            Date truncatedStartDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+           // Date truncatedEndDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+    
+            // Set truncated dates
+            leaveDto.setStartDate(truncatedStartDate);
+            // leaveDto.setEndDate(truncatedEndDate);
+    
+            leaveDto.setStatus("new");
+    
+            // Map the LeaveDto to Leave entity
+            Leave leave = modelMapper.map(leaveDto, Leave.class);
+    
+            // Save the Leave entity
+            return leaveRepository.save(leave);
+        } else {
+            // Handle user not found
+            throw new ResourceNotFoundException("User with username " + leaveDto.getUsername() + " does not exist.");
         }
-
+    }
     @Override
     public Optional<Leave> viewLeave(String leaveId) {
         

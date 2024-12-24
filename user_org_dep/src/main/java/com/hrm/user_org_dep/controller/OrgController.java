@@ -18,7 +18,7 @@ public class OrgController {
     @Autowired
        private OrgService orgService;
        @PostMapping("/createOrg")
-       public Organization postMethodName(@RequestBody OrganizationDto organizationDto) {
+       public Organization createOrganization(@RequestBody OrganizationDto organizationDto) {
            //TODO: process POST request
            
            return orgService.createOrganization(organizationDto);

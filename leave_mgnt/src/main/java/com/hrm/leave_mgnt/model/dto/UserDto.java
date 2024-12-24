@@ -15,7 +15,7 @@ public class UserDto {
     private String title;
     private String sex;
     private Float age;
-    private Float totalLeave;
+    private Double totalLeave;
     private String depId;
     private String role;
     private String experiance;

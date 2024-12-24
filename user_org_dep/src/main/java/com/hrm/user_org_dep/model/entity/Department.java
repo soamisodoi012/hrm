@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,17 +29,20 @@ public class Department {
 
     @ManyToOne
     @JoinColumn(name = "org_id", nullable = false)
+    @ToString.Exclude
     private Organization organization;
 
     @ManyToOne
     @JoinColumn(name = "parent_department_id",nullable = true)
     @JsonIgnore // Prevent Jackson from serializing parentDepartment to avoid the cycle
+    @ToString.Exclude
     private Department parentDepartment;
 
     @OneToMany(mappedBy = "parentDepartment", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore // Prevent Jackson from serializing subDepartments to avoid the cycle
+    @ToString.Exclude
     private List<Department> subDepartments;
-
+    @ToString.Exclude
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true) // Corrected here
     private List<User> users;
 }
