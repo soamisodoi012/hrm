@@ -1,1 +1,1 @@
-synchronoue base microservice
+synchronous base microservice
